@@ -13,7 +13,7 @@ type BloomFilter struct {
 	data []byte
 }
 
-func createBloomFilter(fp_rate float64, total_entries uint64) BloomFilter {
+func CreateBloomFilter(fp_rate float64, total_entries uint64) BloomFilter {
 	m := uint64(-2.081 * math.Log(fp_rate) * float64(total_entries))
 	if m == 0 {
 		m = 1
@@ -40,7 +40,7 @@ func (bf BloomFilter) getPositions(key string) []uint64 {
 	return positions
 }
 
-func (bf BloomFilter) contains(key string) bool {
+func (bf BloomFilter) Contains(key string) bool {
 	for _, bit := range bf.getPositions(key) {
 		block := bit / 8
 		if block >= uint64(len(bf.data)) {
@@ -54,7 +54,7 @@ func (bf BloomFilter) contains(key string) bool {
 	return true
 }
 
-func (bf *BloomFilter) insert(key string) {
+func (bf *BloomFilter) Insert(key string) {
 	for _, bit := range bf.getPositions(key) {
 		block := bit / 8
 		if block >= uint64(len(bf.data)) {
@@ -67,11 +67,11 @@ func (bf *BloomFilter) insert(key string) {
 /*
 func main() {
 	// create bloom filter with .1% fp rate, total 100k entries
-	bf := createBloomFilter(0.001, 100000)
-	bf.insert("hello")
-	bf.insert("world")
-	fmt.Printf("check if hello exists : %t\n", bf.contains("hello"))
-	fmt.Printf("check if bye exists  : %t\n", bf.contains("bye"))
-	fmt.Printf("check if world exists  : %t\n", bf.contains("world"))
+	bf := CreateBloomFilter(0.001, 100000)
+	bf.Insert("hello")
+	bf.Insert("world")
+	fmt.Printf("check if hello exists : %t\n", bf.Contains("hello"))
+	fmt.Printf("check if bye exists  : %t\n", bf.Contains("bye"))
+	fmt.Printf("check if world exists  : %t\n", bf.Contains("world"))
 }
 */
